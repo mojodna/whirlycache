@@ -2,10 +2,9 @@
 <projectDescription>
 	<name>whirlycache-gcode</name>
 	<comment></comment>
-	<projects>
-	</projects>
-	<buildSpec>
-	</buildSpec>
+	<projects></projects>
+	<buildSpec></buildSpec>
 	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 </projectDescription>
