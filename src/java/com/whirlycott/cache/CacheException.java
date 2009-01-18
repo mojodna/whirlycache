@@ -13,12 +13,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.whirlycott.cache;
 
 /**
- * Gets thrown when problems occur with the Whirlycache.  It currently doesn't
+ * Gets thrown when problems occur with the Whirlycache. It currently doesn't
  * describe any specific problem, but rather acts to encapsulate the varying
  * types of Exceptions that the different ManagedCache implementations might
  * throw.
@@ -27,35 +27,35 @@ package com.whirlycott.cache;
  */
 public class CacheException extends Exception {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -4798498446556221410L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4798498446556221410L;
 
-    public CacheException() {
-        super();
-    }
+	public CacheException() {
+		super();
+	}
 
-    /**
-     * @param message
-     */
-    public CacheException(final String message) {
-        super(message);
-    }
+	/**
+	 * @param message
+	 */
+	public CacheException(final String message) {
+		super(message);
+	}
 
-    /**
-     * @param cause
-     */
-    public CacheException(final Throwable cause) {
-        super(cause);
-    }
+	/**
+	 * @param cause
+	 */
+	public CacheException(final Throwable cause) {
+		super(cause);
+	}
 
-    /**
-     * @param message
-     * @param cause
-     */
-    public CacheException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public CacheException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
 
 }

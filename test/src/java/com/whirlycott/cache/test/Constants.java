@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 /*
  * Created on May 16, 2004
@@ -26,10 +26,10 @@ package com.whirlycott.cache.test;
  */
 public class Constants {
 
-    public final static int STORE_COUNT = 50 * 1000;
-    
-    public final static int RETRIEVE_COUNT = 500;
-    
-    public final static int THREAD_COUNT = 32;
-    
+	public final static int STORE_COUNT = 50 * 1000;
+
+	public final static int RETRIEVE_COUNT = 500;
+
+	public final static int THREAD_COUNT = 32;
+
 }

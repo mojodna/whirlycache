@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.whirlycott.cache.component.store;
 
@@ -37,207 +37,188 @@ import com.whirlycott.cache.ManagedCache;
 import com.whirlycott.cache.Messages;
 
 /**
-* Implementation of the <a href="http://excalibur.apache.org/store/">Apache Excalibur Store</a> using Whirlycache as
-* the backend.
-*
-* @author <a href="mailto:peter.royal@pobox.com">peter royal</a>
-*/
+ * Implementation of the <a href="http://excalibur.apache.org/store/">Apache
+ * Excalibur Store</a> using Whirlycache as the backend.
+ * 
+ * @author <a href="mailto:peter.royal@pobox.com">peter royal</a>
+ */
 public class WhirlycacheStore implements Store, ThreadSafe, Configurable, Initializable, Disposable {
-   
-   /**
-    * This is the cache that holds the data that we are going to use.
-    */
-   private Cache cache;
 
-   /**
-    * Represents the cache configuration for this specific store.
-    */
-   private CacheConfiguration cacheConfiguration;
-   
-   /**
-    * The class that implements the Policy interface.
-    */
-   private Class cacheMaintenancePolicyClass;
+	/**
+	 * This is the cache that holds the data that we are going to use.
+	 */
+	private Cache cache;
 
-   /**
-    * The Class that implements the backend ManagedCache interface.  
-    */
-   private Class managedCacheClass;
+	/**
+	 * Represents the cache configuration for this specific store.
+	 */
+	private CacheConfiguration cacheConfiguration;
 
-   /**
-    * Clears all items in the cache.
-    */
-   public void clear() {
-       cache.clear();
-   }
+	/**
+	 * The class that implements the Policy interface.
+	 */
+	private Class cacheMaintenancePolicyClass;
 
-   
-   /**
-    * Configure the cache using a Configuration object.
-    */
-   public void configure(final Configuration configuration) throws ConfigurationException {
-       final Configuration backend = configuration.getChild(Constants.CONFIG_BACKEND);
-       final Configuration policy = configuration.getChild(Constants.CONFIG_POLICY);
+	/**
+	 * The Class that implements the backend ManagedCache interface.
+	 */
+	private Class managedCacheClass;
 
-       cacheConfiguration = new CacheConfiguration();
+	/**
+	 * Clears all items in the cache.
+	 */
+	public void clear() {
+		cache.clear();
+	}
 
-       cacheConfiguration.setName(configuration.getChild(Constants.CONFIG_NAME).getValue(toString()));
-       cacheConfiguration.setBackend(backend.getValue());
-       cacheConfiguration.setMaxSize(configuration.getChild(Constants.CONFIG_MAXSIZE).getValueAsInteger());
-       cacheConfiguration.setPolicy(policy.getValue());
-       cacheConfiguration.setTunerSleepTime(configuration.getChild(Constants.CONFIG_TUNER_SLEEPTIME).getValueAsInteger());
+	/**
+	 * Configure the cache using a Configuration object.
+	 */
+	public void configure(final Configuration configuration) throws ConfigurationException {
+		final Configuration backend = configuration.getChild(Constants.CONFIG_BACKEND);
+		final Configuration policy = configuration.getChild(Constants.CONFIG_POLICY);
 
-       managedCacheClass = loadManagedCacheClass(backend.getLocation());
-       cacheMaintenancePolicyClass = loadCacheMaintenancePolicyClass(policy.getLocation());
-   }
+		cacheConfiguration = new CacheConfiguration();
 
-   
-   /**
-    * I can't imagine why anybody would rely on this method.
-    */
-   public boolean containsKey(final Object key) {
-       boolean retval =  false;
-       if (cache.retrieve(key) != null)
-           retval = true;
-       return retval;
-   }
-   
+		cacheConfiguration.setName(configuration.getChild(Constants.CONFIG_NAME).getValue(toString()));
+		cacheConfiguration.setBackend(backend.getValue());
+		cacheConfiguration.setMaxSize(configuration.getChild(Constants.CONFIG_MAXSIZE).getValueAsInteger());
+		cacheConfiguration.setPolicy(policy.getValue());
+		cacheConfiguration.setTunerSleepTime(configuration.getChild(Constants.CONFIG_TUNER_SLEEPTIME).getValueAsInteger());
 
-   private CacheMaintenancePolicy[] createCacheMaintenancePolicies(final ManagedCache cache)
-       throws IllegalAccessException, InstantiationException {
-       final CacheMaintenancePolicy policy = (CacheMaintenancePolicy)cacheMaintenancePolicyClass.newInstance();
+		managedCacheClass = loadManagedCacheClass(backend.getLocation());
+		cacheMaintenancePolicyClass = loadCacheMaintenancePolicyClass(policy.getLocation());
+	}
 
-       policy.setCache(cache);
-       policy.setConfiguration(cacheConfiguration);
+	/**
+	 * I can't imagine why anybody would rely on this method.
+	 */
+	public boolean containsKey(final Object key) {
+		boolean retval = false;
+		if (cache.retrieve(key) != null) {
+			retval = true;
+		}
+		return retval;
+	}
 
-       return new CacheMaintenancePolicy[]{policy};
-   }
+	private CacheMaintenancePolicy[] createCacheMaintenancePolicies(final ManagedCache cache) throws IllegalAccessException, InstantiationException {
+		final CacheMaintenancePolicy policy = (CacheMaintenancePolicy) cacheMaintenancePolicyClass.newInstance();
 
-   /**
-    * Shuts down the Whirlycache and its associated tuning thread.
-    */
-   public void dispose() {
-       cache.clear();
-       /* 
-        * The field 'cache' is really a CacheDecorator.  We don't expose it because 
-        * it shouldn't be used directly.  But we'll cast it here.
-        */
-       ((CacheDecorator)cache).shutdown();
-   }
-   
+		policy.setCache(cache);
+		policy.setConfiguration(cacheConfiguration);
 
-   /**
-    * This method is not supported by Whirlycache.
-    */
-   public void free() {
-       // we don't support this
-   }
-   
-   /**
-    * Gets an object out of the whirlycache
-    */
-   public Object get(final Object key) {
-       return cache.retrieve(key);
-   }
-   
+		return new CacheMaintenancePolicy[] { policy };
+	}
 
-   /**
-    * Initializes a Whirlycache.
-    */
-   public void initialize() throws Exception {
-       final ManagedCache managedCache = (ManagedCache)managedCacheClass.newInstance();
-       cache = new CacheDecorator(managedCache, cacheConfiguration, createCacheMaintenancePolicies(managedCache));
-   }
-   
-   /**
-    * We don't support keys().
-    */
-   public Enumeration keys() {
-       throw new UnsupportedOperationException();
-   }
-   
+	/**
+	 * Shuts down the Whirlycache and its associated tuning thread.
+	 */
+	public void dispose() {
+		cache.clear();
+		/*
+		 * The field 'cache' is really a CacheDecorator. We don't expose it
+		 * because it shouldn't be used directly. But we'll cast it here.
+		 */
+		((CacheDecorator) cache).shutdown();
+	}
 
-   /**
-    * Loads up the specified cache maintenance class
-    * @param _location
-    * @return
-    * @throws ConfigurationException
-    */
-   private Class loadCacheMaintenancePolicyClass(final String _location) throws ConfigurationException {
-       final String policy = cacheConfiguration.getPolicy();
+	/**
+	 * This method is not supported by Whirlycache.
+	 */
+	public void free() {
+		// we don't support this
+	}
 
-       try {
-           final Class clazz = Thread.currentThread().getContextClassLoader().loadClass(policy);
+	/**
+	 * Gets an object out of the whirlycache
+	 */
+	public Object get(final Object key) {
+		return cache.retrieve(key);
+	}
 
-           if (!CacheMaintenancePolicy.class.isAssignableFrom(clazz)) {
-               final Object[] args = {
-                       policy,
-                       _location
-               };
-               throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.not_cache_maintenance_policy", args)); //$NON-NLS-1$
-           }
+	/**
+	 * Initializes a Whirlycache.
+	 */
+	public void initialize() throws Exception {
+		final ManagedCache managedCache = (ManagedCache) managedCacheClass.newInstance();
+		cache = new CacheDecorator(managedCache, cacheConfiguration, createCacheMaintenancePolicies(managedCache));
+	}
 
-           return clazz;
-       } catch (final ClassNotFoundException e) {
-           final Object[] args = {
-                   policy,
-                   _location
-           };
-           throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.cannot_load_policy", args), e); //$NON-NLS-1$
-       }
-   }
+	/**
+	 * We don't support keys().
+	 */
+	public Enumeration keys() {
+		throw new UnsupportedOperationException();
+	}
 
-   /**
-    * Loads up the specified managed cache class.
-    * @param _location
-    * @return
-    * @throws ConfigurationException
-    */
-   private Class loadManagedCacheClass(final String _location) throws ConfigurationException {
-       final String backend = cacheConfiguration.getBackend();
+	/**
+	 * Loads up the specified cache maintenance class
+	 * 
+	 * @param _location
+	 * @return
+	 * @throws ConfigurationException
+	 */
+	private Class loadCacheMaintenancePolicyClass(final String _location) throws ConfigurationException {
+		final String policy = cacheConfiguration.getPolicy();
 
-       try {
-           final Class clazz = Thread.currentThread().getContextClassLoader().loadClass(backend);
+		try {
+			final Class clazz = Thread.currentThread().getContextClassLoader().loadClass(policy);
 
-           if (!ManagedCache.class.isAssignableFrom(clazz)) {
-               final Object[] args = {
-                       backend,
-                       _location
-               };
-               throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.not_managed_cache", args)); //$NON-NLS-1$
-           }
+			if (!CacheMaintenancePolicy.class.isAssignableFrom(clazz)) {
+				final Object[] args = { policy, _location };
+				throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.not_cache_maintenance_policy", args)); //$NON-NLS-1$
+			}
 
-           return clazz;
-       } catch (final ClassNotFoundException e) {
-           final Object[] args = {
-                   backend,
-                   _location
-           };
-           throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.cannot_load_backend", args), e); //$NON-NLS-1$
-       }
-   }
-   
+			return clazz;
+		} catch (final ClassNotFoundException e) {
+			final Object[] args = { policy, _location };
+			throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.cannot_load_policy", args), e); //$NON-NLS-1$
+		}
+	}
 
-   /**
-    * Removes the specified object from the cache.
-    */
-   public void remove(final Object key) {
-       cache.remove(key);
-   }
+	/**
+	 * Loads up the specified managed cache class.
+	 * 
+	 * @param _location
+	 * @return
+	 * @throws ConfigurationException
+	 */
+	private Class loadManagedCacheClass(final String _location) throws ConfigurationException {
+		final String backend = cacheConfiguration.getBackend();
 
-   
-   /**
-    * Returns the number of items in the cache.
-    */
-   public int size() {
-       return cache.size();
-   }
-   
+		try {
+			final Class clazz = Thread.currentThread().getContextClassLoader().loadClass(backend);
 
-   /**
-    * Stores a value in the cache that can be retrieved using 'key'.
-    */
-   public void store(final Object key, final Object value) throws IOException {
-       cache.store(key, value);
-   }
+			if (!ManagedCache.class.isAssignableFrom(clazz)) {
+				final Object[] args = { backend, _location };
+				throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.not_managed_cache", args)); //$NON-NLS-1$
+			}
+
+			return clazz;
+		} catch (final ClassNotFoundException e) {
+			final Object[] args = { backend, _location };
+			throw new ConfigurationException(Messages.getCompoundString("WhirlycacheStore.cannot_load_backend", args), e); //$NON-NLS-1$
+		}
+	}
+
+	/**
+	 * Removes the specified object from the cache.
+	 */
+	public void remove(final Object key) {
+		cache.remove(key);
+	}
+
+	/**
+	 * Returns the number of items in the cache.
+	 */
+	public int size() {
+		return cache.size();
+	}
+
+	/**
+	 * Stores a value in the cache that can be retrieved using 'key'.
+	 */
+	public void store(final Object key, final Object value) throws IOException {
+		cache.store(key, value);
+	}
 }

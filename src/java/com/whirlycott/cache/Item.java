@@ -24,45 +24,45 @@ package com.whirlycott.cache;
  * @author Philip Jacob
  */
 public class Item {
-	
+
 	protected Object item;
-	
+
 	/** Relative time that the Item was added to the cache. */
 	protected long added;
-	
+
 	/** Relative time that the Item was last used. */
 	protected long used;
-	
+
 	/** Expire this Item after this much time. */
 	protected long expiresAfter = -1;
-	
+
 	/** Number of times that the Item has been accessed. */
 	protected volatile long count;
-	
+
 	/**
 	 * Lock for the counter.
 	 */
 	protected final Object countLock = new Object();
-	
+
 	public Item(final Object _item, final long _added, final long _expiresTime) {
 		item = _item;
 		added = _added;
 		expiresAfter = _expiresTime;
 	}
-	
+
 	/**
 	 * @return Returns the item.
 	 */
 	public Object getItem() {
 		return item;
 	}
-	
+
 	void setUsed(final long _used) {
 		used = _used;
 	}
-	
+
 	void incrementCount() {
-		synchronized(countLock) {
+		synchronized (countLock) {
 			count++;
 		}
 	}
@@ -70,21 +70,20 @@ public class Item {
 	public synchronized long getAdded() {
 		return added;
 	}
-	
+
 	public synchronized long getCount() {
 		return count;
 	}
-	
+
 	public synchronized long getUsed() {
 		return used;
 	}
-	
+
 	public synchronized void setCount(final long count) {
 		this.count = count;
 	}
-	
+
 	public long getExpiresAfter() {
-	    return expiresAfter;
+		return expiresAfter;
 	}
 }
-	

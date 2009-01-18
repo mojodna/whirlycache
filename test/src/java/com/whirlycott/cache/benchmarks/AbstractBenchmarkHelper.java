@@ -6,15 +6,15 @@ package com.whirlycott.cache.benchmarks;
 
 /**
  * @author pjacob
- *
+ * 
  */
 public abstract class AbstractBenchmarkHelper {
 
-    /**
-     * 
-     */
-    public AbstractBenchmarkHelper() {
-        super();
-    }
+	/**
+	 * 
+	 */
+	public AbstractBenchmarkHelper() {
+		super();
+	}
 
 }

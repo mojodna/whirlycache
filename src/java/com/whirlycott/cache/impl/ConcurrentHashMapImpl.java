@@ -13,30 +13,31 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.whirlycott.cache.impl;
 
-import EDU.oswego.cs.dl.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.whirlycott.cache.ManagedCache;
 
 /**
  * This is a ManagedCache implementation based on Doug Lea's excellent
- * ConcurrentHashMap in his 
- * <a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">util.concurrent</a>
+ * ConcurrentHashMap in his <a
+ * href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">util.concurrent</a>
  * library:
  * 
  * @author Phil Jacob
  */
 public class ConcurrentHashMapImpl extends AbstractMapBackedCache implements ManagedCache {
-    
-    public ConcurrentHashMapImpl() {
-        c = new ConcurrentHashMap();
-    }
-    
+
+	public ConcurrentHashMapImpl() {
+		c = new ConcurrentHashMap();
+	}
+
+	@Override
 	public void setMostlyRead(final boolean _mostlyRead) {
-		//Nothing to do here.
+		// Nothing to do here.
 		return;
 	}
 

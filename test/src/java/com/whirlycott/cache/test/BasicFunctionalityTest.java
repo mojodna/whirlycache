@@ -16,83 +16,84 @@
  */
 package com.whirlycott.cache.test;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import junit.framework.TestCase;
+
+import org.apache.log4j.Logger;
+
+import com.whirlycott.cache.CacheConfiguration;
 import com.whirlycott.cache.CacheDecorator;
+import com.whirlycott.cache.CacheMaintenancePolicy;
 import com.whirlycott.cache.CacheManager;
 import com.whirlycott.cache.ManagedCache;
-import com.whirlycott.cache.CacheMaintenancePolicy;
-import com.whirlycott.cache.CacheConfiguration;
-import com.whirlycott.cache.policy.NullPolicy;
 import com.whirlycott.cache.impl.ConcurrentHashMapImpl;
+import com.whirlycott.cache.policy.NullPolicy;
 
 /**
  * @author <a href="mailto:peter.royal@pobox.com">peter royal </a>
  */
 public class BasicFunctionalityTest extends TestCase {
-    
-    /**
-     * Logger.
-     */
-    private static final Log log = LogFactory.getLog(BasicFunctionalityTest.class);
-  
-    private CacheDecorator _cache;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        ManagedCache managedCache = new ConcurrentHashMapImpl();
-        CacheMaintenancePolicy policy = new NullPolicy();
-        CacheConfiguration configuration = new CacheConfiguration();
+	/**
+	 * Logger.
+	 */
+	private static final Logger log = Logger.getLogger(BasicFunctionalityTest.class);
 
-        configuration.setName("test");
-        configuration.setTunerSleepTime(60);
-        configuration.setMaxSize(100);
+	private CacheDecorator _cache;
 
-        _cache = new CacheDecorator(managedCache, configuration, new CacheMaintenancePolicy[] { policy });
-    }
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		final ManagedCache managedCache = new ConcurrentHashMapImpl();
+		final CacheMaintenancePolicy policy = new NullPolicy();
+		final CacheConfiguration configuration = new CacheConfiguration();
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        _cache.clear();
-        _cache.shutdown();
-    }
+		configuration.setName("test");
+		configuration.setTunerSleepTime(60);
+		configuration.setMaxSize(100);
 
-    public void testPutGetRemove() throws Exception {
-        Object key = new Object();
-        Object value = new Object();
+		_cache = new CacheDecorator(managedCache, configuration, new CacheMaintenancePolicy[] { policy });
+	}
 
-        assertEquals(0, _cache.size());
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		_cache.clear();
+		_cache.shutdown();
+	}
 
-        _cache.store(key, value);
+	public void testPutGetRemove() throws Exception {
+		final Object key = new Object();
+		final Object value = new Object();
 
-        assertEquals(1, _cache.size());
+		assertEquals(0, _cache.size());
 
-        assertEquals(value, _cache.retrieve(key));
+		_cache.store(key, value);
 
-        assertEquals(value, _cache.remove(key));
+		assertEquals(1, _cache.size());
 
-        assertEquals(0, _cache.size());
-    }
-    
-    
-    /**
-     * Verifies that the functionality to get a list of cache names works.
-     * @throws Exception
-     */
-    public void testGetCacheNames() throws Exception {
-        final String[] names = CacheManager.getInstance().getCacheNames();
-        assertNotNull(names);
-        assertTrue(names.length > 0);
-        boolean defaultCacheFound = false;
-        for (int i = 0; i < names.length; i++) {
-            final String cacheName = names[i];
-            log.debug("Cache name: " + cacheName);
-            if (cacheName.equals("default")) {
-                defaultCacheFound = true;
-            }
-            assertTrue(defaultCacheFound);
-        }
-    }
+		assertEquals(value, _cache.retrieve(key));
+
+		assertEquals(value, _cache.remove(key));
+
+		assertEquals(0, _cache.size());
+	}
+
+	/**
+	 * Verifies that the functionality to get a list of cache names works.
+	 * 
+	 * @throws Exception
+	 */
+	public void testGetCacheNames() throws Exception {
+		final String[] names = CacheManager.getInstance().getCacheNames();
+		assertNotNull(names);
+		assertTrue(names.length > 0);
+		boolean defaultCacheFound = false;
+		for (final String cacheName : names) {
+			log.debug("Cache name: " + cacheName);
+			if (cacheName.equals("default")) {
+				defaultCacheFound = true;
+			}
+			assertTrue(defaultCacheFound);
+		}
+	}
 }

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 /*
  * Created on May 16, 2004
@@ -28,71 +28,74 @@ import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * @author phil
  */
 public class ReferenceTest {
-    
-    private static Log log = LogFactory.getLog(ReferenceTest.class);
 
-    public static void main(String[] args) throws CacheException {
-        
-        CacheManager cm = CacheManager.create();
-        
-        Cache cache = new Cache("test", 1000, true, false, 500, 200);
-        cm.addCache(cache);
-        
-        Outer outer = new Outer();
-        
-        log.debug("The outer default value is: " + outer.getIn().innerName);
-        Element e = new Element("outer", outer);
-        cache.put(e);
-        log.debug("Now the outer is in the cache");
-        
-        outer.getIn().innerName = "changed the inner string!!!!!!!";
-        
-        Element modifiedElement = cache.get("outer");
-        
-        log.debug("The value from the cache is: " + ((Outer)modifiedElement.getValue()).getIn().innerName);
-        
-        cache.put(e);
-        
-        
-        
-        cm.shutdown();
-        
-    }
+	private static Logger log = Logger.getLogger(ReferenceTest.class);
+
+	public static void main(final String[] args) throws CacheException {
+
+		final CacheManager cm = CacheManager.create();
+
+		final Cache cache = new Cache("test", 1000, true, false, 500, 200);
+		cm.addCache(cache);
+
+		final Outer outer = new Outer();
+
+		log.debug("The outer default value is: " + outer.getIn().innerName);
+		final Element e = new Element("outer", outer);
+		cache.put(e);
+		log.debug("Now the outer is in the cache");
+
+		outer.getIn().innerName = "changed the inner string!!!!!!!";
+
+		final Element modifiedElement = cache.get("outer");
+
+		log.debug("The value from the cache is: " + ((Outer) modifiedElement.getValue()).getIn().innerName);
+
+		cache.put(e);
+
+		cm.shutdown();
+
+	}
 }
 
 class Outer implements Serializable {
-    
-    private Inner in;
-    
-    Outer() {
-        in = new Inner();
-    }
-    
-    /**
-     * @return Returns the in.
-     */
-    public Inner getIn() {
-        return in;
-    }
 
-    /**
-     * @param in The in to set.
-     */
-    public void setIn(Inner in) {
-        this.in = in;
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -689418001067150615L;
+
+	private Inner in;
+
+	Outer() {
+		in = new Inner();
+	}
+
+	/**
+	 * @return Returns the in.
+	 */
+	public Inner getIn() {
+		return in;
+	}
+
+	/**
+	 * @param in
+	 *            The in to set.
+	 */
+	public void setIn(final Inner in) {
+		this.in = in;
+	}
 
 }
 
 class Inner {
-    
-    public String innerName = "default phil inner name";
-    
+
+	public String innerName = "default phil inner name";
+
 }

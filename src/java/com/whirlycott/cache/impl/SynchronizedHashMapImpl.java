@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.whirlycott.cache.impl;
 
@@ -23,8 +23,8 @@ import java.util.HashMap;
 import com.whirlycott.cache.ManagedCache;
 
 /**
- * This is a java.util.HashMap-backed (using synchronization) implementation
- * of a ManagedCache.
+ * This is a java.util.HashMap-backed (using synchronization) implementation of
+ * a ManagedCache.
  * 
  * There's absolutely no way that you would want to use this in real life. We
  * include it only for testing and benchmarking purposes.
@@ -32,11 +32,12 @@ import com.whirlycott.cache.ManagedCache;
  * @author Phil Jacob
  */
 public class SynchronizedHashMapImpl extends AbstractMapBackedCache implements ManagedCache {
-    
-    public SynchronizedHashMapImpl() {
-        c = Collections.synchronizedMap( new HashMap() );
-    }
 
+	public SynchronizedHashMapImpl() {
+		c = Collections.synchronizedMap(new HashMap());
+	}
+
+	@Override
 	public void setMostlyRead(final boolean _mostlyRead) {
 		return;
 	}

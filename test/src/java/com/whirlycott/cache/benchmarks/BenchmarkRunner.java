@@ -13,8 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -27,135 +26,137 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  * @author pjacob
- *
+ * 
  */
 public class BenchmarkRunner {
 
-    /**
-     * Number of concurrent threads.
-     */
-    public final static int CONCURRENT_THREADS = 20;
-    
-    /**
-     * Number of elements in the cache
-     */
-    private static final int ELEMENTS_CACHED = 50000;
+	/**
+	 * Number of concurrent threads.
+	 */
+	public final static int CONCURRENT_THREADS = 20;
 
-    /**
-     * Number of iterations that the benchmark will be run.
-     */
-    public final static int ITERATIONS_PER_BENCHMARK = 10;
+	/**
+	 * Number of elements in the cache
+	 */
+	private static final int ELEMENTS_CACHED = 50000;
 
-    /**
-     * Logger.
-     */
-    private static final Log log = LogFactory.getLog(BenchmarkRunner.class);
+	/**
+	 * Number of iterations that the benchmark will be run.
+	 */
+	public final static int ITERATIONS_PER_BENCHMARK = 10;
 
-    /**
-     * Percent of read-only activity: 8 = 80%, 5 = 50%, etc.
-     */
-    public final static int PERCENT_READONLY = 8;
+	/**
+	 * Logger.
+	 */
+	private static final Logger log = Logger.getLogger(BenchmarkRunner.class);
 
-    /**
-     * How many milliseconds should we do a Thread.sleep(n) between tests.
-     */
-    public final static int SLEEPTIME_BETWEEN_TESTS = 11000;
+	/**
+	 * Percent of read-only activity: 8 = 80%, 5 = 50%, etc.
+	 */
+	public final static int PERCENT_READONLY = 8;
 
-    /**
-     * Entry point into the benchmarking code.
-     * @param args
-     * @throws IOException
-     */
-    public static void main(final String[] args) throws Exception {
+	/**
+	 * How many milliseconds should we do a Thread.sleep(n) between tests.
+	 */
+	public final static int SLEEPTIME_BETWEEN_TESTS = 11000;
 
-        //Just add in new cache bencharkables here and the rest is automatic.
-        final Map benchmarkableCaches = new HashMap();
+	/**
+	 * Entry point into the benchmarking code.
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(final String[] args) throws Exception {
 
-        //Test params
-        final Params testParams = new Params(ELEMENTS_CACHED, CONCURRENT_THREADS);
-        
-        benchmarkableCaches.put(new StandardHashmap(), testParams);
+		// Just add in new cache bencharkables here and the rest is automatic.
+		final Map benchmarkableCaches = new HashMap();
 
-        benchmarkableCaches.put(new Ehcache(), testParams);
+		// Test params
+		final Params testParams = new Params(ELEMENTS_CACHED, CONCURRENT_THREADS);
 
-        benchmarkableCaches.put(new Whirlycache(), testParams);
+		benchmarkableCaches.put(new StandardHashmap(), testParams);
 
-        benchmarkableCaches.put(new Oscache(), testParams);
+		benchmarkableCaches.put(new Ehcache(), testParams);
 
-        benchmarkableCaches.put(new ApacheJCS(), testParams);
+		benchmarkableCaches.put(new Whirlycache(), testParams);
 
-        benchmarkableCaches.put(new JBossCache(), testParams);
+		benchmarkableCaches.put(new Oscache(), testParams);
 
-        //Store the results in a list.
-        final List results = new ArrayList();
+		benchmarkableCaches.put(new ApacheJCS(), testParams);
 
-        /*
-         * Run each benchmark.
-         */
-        for (final Iterator i = benchmarkableCaches.keySet().iterator(); i.hasNext();) {
-            final Benchmarkable b = (Benchmarkable) i.next();
-            log.debug("Starting test: " + b.getName());
+		benchmarkableCaches.put(new JBossCache(), testParams);
 
-            final Params p = (Params) benchmarkableCaches.get(b);
-            final Result result = b.benchmark(p);
-            results.add(result);
-            log.debug("Benchmark for " + b.getName() + " with settings " + p.getShortName() + ": " + result.getTime());
+		// Store the results in a list.
+		final List results = new ArrayList();
 
-            //Do a gc between each test.
-            System.gc();
-            
-            log.debug("Sleeping between tests...");
-            Thread.sleep(SLEEPTIME_BETWEEN_TESTS);
+		/*
+		 * Run each benchmark.
+		 */
+		for (final Iterator i = benchmarkableCaches.keySet().iterator(); i.hasNext();) {
+			final Benchmarkable b = (Benchmarkable) i.next();
+			log.debug("Starting test: " + b.getName());
 
-        }
+			final Params p = (Params) benchmarkableCaches.get(b);
+			final Result result = b.benchmark(p);
+			results.add(result);
+			log.debug("Benchmark for " + b.getName() + " with settings " + p.getShortName() + ": " + result.getTime());
 
-        //Print out a graphic.
-        makeGraph(results);
+			// Do a gc between each test.
+			System.gc();
 
-    }
+			log.debug("Sleeping between tests...");
+			Thread.sleep(SLEEPTIME_BETWEEN_TESTS);
 
-    /**
-     * Make the graphic.
-     * @param _results
-     * @throws IOException
-     */
-    public static void makeGraph(final List _results) throws IOException {
-        final CategoryPlot plot = new CategoryPlot();
+		}
 
-        //Create jfree objects based on the List of results passed in
-        int counter = 0;
-        final DefaultCategoryDataset d = new DefaultCategoryDataset();
-        for (final Iterator i = _results.iterator(); i.hasNext();) {
+		// Print out a graphic.
+		makeGraph(results);
 
-            final Result result = (Result) i.next();
-            d.addValue(result.getTime(), result.getName(), result.getName());
-            log.debug("Adding: " + result.getName() + " with time " + result.getTime());
-            plot.setDataset(counter, d);
-            counter++;
-        }
+	}
 
-        plot.setRenderer(new BarRenderer3D());
-        
-        final CategoryAxis domainAxis = new CategoryAxis3D();
-        plot.setDomainAxis(domainAxis);
-        
-        final ValueAxis rangeAxis = new NumberAxis3D();
-        rangeAxis.setLabel("Milliseconds");
-        plot.setRangeAxis(rangeAxis);
-        plot.setForegroundAlpha(0.7f);
+	/**
+	 * Make the graphic.
+	 * 
+	 * @param _results
+	 * @throws IOException
+	 */
+	public static void makeGraph(final List _results) throws IOException {
+		final CategoryPlot plot = new CategoryPlot();
 
-        final JFreeChart chart = new JFreeChart("Whirlycache Benchmarks at " + new Date(), plot);
-        chart.setAntiAlias(true);
+		// Create jfree objects based on the List of results passed in
+		int counter = 0;
+		final DefaultCategoryDataset d = new DefaultCategoryDataset();
+		for (final Iterator i = _results.iterator(); i.hasNext();) {
 
-        final String file = System.getProperty("java.io.tmpdir") + "whirlycache-results.png";
-        log.debug("Writing results to " + file);
-        final File f = new File(file);
+			final Result result = (Result) i.next();
+			d.addValue(result.getTime(), result.getName(), result.getName());
+			log.debug("Adding: " + result.getName() + " with time " + result.getTime());
+			plot.setDataset(counter, d);
+			counter++;
+		}
 
-        ChartUtilities.saveChartAsPNG(f, chart, 500, 500);
-    }
+		plot.setRenderer(new BarRenderer3D());
 
-    public BenchmarkRunner() {
-        super();
-    }
+		final CategoryAxis domainAxis = new CategoryAxis3D();
+		plot.setDomainAxis(domainAxis);
+
+		final ValueAxis rangeAxis = new NumberAxis3D();
+		rangeAxis.setLabel("Milliseconds");
+		plot.setRangeAxis(rangeAxis);
+		plot.setForegroundAlpha(0.7f);
+
+		final JFreeChart chart = new JFreeChart("Whirlycache Benchmarks at " + new Date(), plot);
+		chart.setAntiAlias(true);
+
+		final String file = System.getProperty("java.io.tmpdir") + "whirlycache-results.png";
+		log.debug("Writing results to " + file);
+		final File f = new File(file);
+
+		ChartUtilities.saveChartAsPNG(f, chart, 500, 500);
+	}
+
+	public BenchmarkRunner() {
+		super();
+	}
 
 }

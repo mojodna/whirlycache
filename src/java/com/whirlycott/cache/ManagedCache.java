@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.whirlycott.cache;
 
@@ -21,21 +21,27 @@ import java.util.Map;
 
 /**
  * This is the interface that all backend caching systems must implement.
- *  
+ * 
  * @author Phil Jacob
  */
 public interface ManagedCache extends Map {
-	
+
 	/**
-	 * For ManagedCache implementations that can perform optimizations for mostly-read environments.
-	 * @param _mostlyRead Whether most operations will be reads.
+	 * For ManagedCache implementations that can perform optimizations for
+	 * mostly-read environments.
+	 * 
+	 * @param _mostlyRead
+	 *            Whether most operations will be reads.
 	 */
-    public void setMostlyRead(boolean _mostlyRead);
-    
-    /**
-     * Store an Object in the cache.
-     * @param k key with which the specified value is to be associated.
-     * @param v value to be associated with the specified key.
-     */
-    public void store(Object k, Object v);
+	public void setMostlyRead(boolean _mostlyRead);
+
+	/**
+	 * Store an Object in the cache.
+	 * 
+	 * @param k
+	 *            key with which the specified value is to be associated.
+	 * @param v
+	 *            value to be associated with the specified key.
+	 */
+	public void store(Object k, Object v);
 }

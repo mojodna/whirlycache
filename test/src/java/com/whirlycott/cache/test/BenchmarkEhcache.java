@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 /*
  * Created on May 16, 2004
@@ -26,67 +26,65 @@ import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * @author phil
  */
 public class BenchmarkEhcache {
-    
-    private static Log log = LogFactory.getLog(BenchmarkEhcache.class);
 
-    public static void main(String[] args) throws CacheException {
-               
-        log.debug("Setting up the cache...");
-        CacheManager cacheManager = CacheManager.create();
-        
-        Cache cache = new Cache("test", Constants.STORE_COUNT, false, false, 3600, 3600);
-        cacheManager.addCache(cache);
-                
-        //BEGIN PUT TEST
-        long start = System.currentTimeMillis();
-        //Do puts.
-        for (int i = 0; i < Constants.STORE_COUNT; i++) {
-            Element e = new Element(new Integer(i).toString(), "value" + i);
-            cache.put(e);
-        }     
-        long end = System.currentTimeMillis();       
-        log.debug("Total PUT time was: " + (end - start));
-        //END PUT TEST
-                
-        //---------------------------------------------
-        
-        //BEGIN GET TEST
-        long startGet = System.currentTimeMillis();
-        
-        for (int i = 0; i < Constants.RETRIEVE_COUNT; i++) {
-        	for (int loop=0; loop < Constants.STORE_COUNT; loop++) {
-        		Element e = cache.get(new Integer(loop).toString());
-        		Object o = e.getValue();
-        	}
-        }   
-        
-        long endGet = System.currentTimeMillis();
-        log.debug("Total GET time: " + (endGet - startGet));
-        //END GET TEST
+	private static Logger log = Logger.getLogger(BenchmarkEhcache.class);
 
-        //BEGIN MULTITHREAD GET
-        long startMGet = System.currentTimeMillis();
-        
-        long endMGet = System.currentTimeMillis();
-        //END MULTITHREAD GET
-        
-        
-        //BEGIN MULTITHREAD GET/PUT
-        long startMG = System.currentTimeMillis();
-        
-        long endMG = System.currentTimeMillis();
-        //END MULTITHREAD GET/PUT
-        
-        log.debug("Shutting down the cache...");
-        cacheManager.shutdown();
-        log.debug("Done.");
-        
-    }
+	public static void main(final String[] args) throws CacheException {
+
+		log.debug("Setting up the cache...");
+		final CacheManager cacheManager = CacheManager.create();
+
+		final Cache cache = new Cache("test", Constants.STORE_COUNT, false, false, 3600, 3600);
+		cacheManager.addCache(cache);
+
+		// BEGIN PUT TEST
+		final long start = System.currentTimeMillis();
+		// Do puts.
+		for (int i = 0; i < Constants.STORE_COUNT; i++) {
+			final Element e = new Element(new Integer(i).toString(), "value" + i);
+			cache.put(e);
+		}
+		final long end = System.currentTimeMillis();
+		log.debug("Total PUT time was: " + (end - start));
+		// END PUT TEST
+
+		// ---------------------------------------------
+
+		// BEGIN GET TEST
+		final long startGet = System.currentTimeMillis();
+
+		for (int i = 0; i < Constants.RETRIEVE_COUNT; i++) {
+			for (int loop = 0; loop < Constants.STORE_COUNT; loop++) {
+				final Element e = cache.get(new Integer(loop).toString());
+				final Object o = e.getValue();
+			}
+		}
+
+		final long endGet = System.currentTimeMillis();
+		log.debug("Total GET time: " + (endGet - startGet));
+		// END GET TEST
+
+		// BEGIN MULTITHREAD GET
+		final long startMGet = System.currentTimeMillis();
+
+		final long endMGet = System.currentTimeMillis();
+		// END MULTITHREAD GET
+
+		// BEGIN MULTITHREAD GET/PUT
+		final long startMG = System.currentTimeMillis();
+
+		final long endMG = System.currentTimeMillis();
+		// END MULTITHREAD GET/PUT
+
+		log.debug("Shutting down the cache...");
+		cacheManager.shutdown();
+		log.debug("Done.");
+
+	}
 }

@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package com.whirlycott.cache.impl;
 
@@ -33,14 +33,14 @@ public abstract class AbstractMapBackedCache implements ManagedCache {
 
 	/** Underlying Map to store cached objects in. */
 	protected Map c;
-	
+
 	public void destroy() {
 		c.clear();
 		c = null;
 	}
 
 	public abstract void setMostlyRead(final boolean _mostlyRead);
-	
+
 	public int size() {
 		return c.size();
 	}
@@ -88,11 +88,11 @@ public abstract class AbstractMapBackedCache implements ManagedCache {
 	public Object put(final Object key, final Object value) {
 		return c.put(key, value);
 	}
-	
+
 	public void store(final Object key, final Object value) {
 		c.put(key, value);
 	}
-	
+
 	public Object retrieve(final Object key) {
 		return c.get(key);
 	}

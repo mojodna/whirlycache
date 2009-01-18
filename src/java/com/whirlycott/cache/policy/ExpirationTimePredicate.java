@@ -20,8 +20,7 @@ package com.whirlycott.cache.policy;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import com.whirlycott.cache.Item;
 
@@ -33,44 +32,44 @@ import com.whirlycott.cache.Item;
  */
 public class ExpirationTimePredicate implements Predicate {
 
-    /**
-     * Logger.
-     */
-    private static final Log log = LogFactory.getLog(ExpirationTimePredicate.class);
+	/**
+	 * Logger.
+	 */
+	private static final Logger log = Logger.getLogger(ExpirationTimePredicate.class);
 
-    private final long currentTime;
+	private final long currentTime;
 
-    /**
-     * Creates an ExpirationTimePredicate.
-     * 
-     * @param currentTime
-     *            Cache's notion of the "current time."
-     */
-    public ExpirationTimePredicate(final long currentTime) {
-        this.currentTime = currentTime;
-    }
+	/**
+	 * Creates an ExpirationTimePredicate.
+	 * 
+	 * @param currentTime
+	 *            Cache's notion of the "current time."
+	 */
+	public ExpirationTimePredicate(final long currentTime) {
+		this.currentTime = currentTime;
+	}
 
-    /**
-     * Only Items with an expiration time that has passed will cause this to
-     * return true.
-     */
-    public boolean evaluate(final Object obj) {
-        boolean retval = false;
+	/**
+	 * Only Items with an expiration time that has passed will cause this to
+	 * return true.
+	 */
+	public boolean evaluate(final Object obj) {
+		boolean retval = false;
 
-        if (obj instanceof Entry) {
-            if (((Entry) obj).getValue() instanceof Item) {
-                final Item item = (Item) ((Entry) obj).getValue();
-                if (item.getExpiresAfter() > 0) {
-                    /*
-                     * log.debug("Current time: " + currentTime);
-                     * log.debug("Expiration time: " + (item.getAdded() +
-                     * item.getExpiresAfter()));
-                     */
-                    retval = ((item.getExpiresAfter() + item.getAdded()) < currentTime);
-                }
-            }
-        }
+		if (obj instanceof Entry) {
+			if (((Entry) obj).getValue() instanceof Item) {
+				final Item item = (Item) ((Entry) obj).getValue();
+				if (item.getExpiresAfter() > 0) {
+					/*
+					 * log.debug("Current time: " + currentTime);
+					 * log.debug("Expiration time: " + (item.getAdded() +
+					 * item.getExpiresAfter()));
+					 */
+					retval = item.getExpiresAfter() + item.getAdded() < currentTime;
+				}
+			}
+		}
 
-        return retval;
-    }
+		return retval;
+	}
 }

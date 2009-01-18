@@ -26,84 +26,84 @@ import java.io.Serializable;
  */
 public class RecordKeeper implements Serializable {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -8354128118267818665L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8354128118267818665L;
 
-    /** The total number of cache hits. */
-    private volatile long hits;
+	/** The total number of cache hits. */
+	private volatile long hits;
 
-    /** Lock used for the hits value. */
-    private final Object hitLock = new Object();
+	/** Lock used for the hits value. */
+	private final Object hitLock = new Object();
 
-    /** The total number of cache questions. */
-    private volatile long totalOperations;
+	/** The total number of cache questions. */
+	private volatile long totalOperations;
 
-    /** Lock used for the operation value. */
-    private final Object operationLock = new Object();
+	/** Lock used for the operation value. */
+	private final Object operationLock = new Object();
 
-    private long totalOperationsStartTuneCycle;
+	private long totalOperationsStartTuneCycle;
 
-    private long queriesPerSecond;
+	private long queriesPerSecond;
 
-    /**
-     * @return Returns the hits.
-     */
-    public long getHits() {
-        return hits;
-    }
+	/**
+	 * @return Returns the hits.
+	 */
+	public long getHits() {
+		return hits;
+	}
 
-    /**
-     * @param hits
-     *            The hits to set.
-     */
-    public void setHits(final long hits) {
-        this.hits = hits;
-    }
+	/**
+	 * @param hits
+	 *            The hits to set.
+	 */
+	public void setHits(final long hits) {
+		this.hits = hits;
+	}
 
-    /**
-     * @return Returns the totalOperations.
-     */
-    public long getTotalOperations() {
-        return totalOperations;
-    }
+	/**
+	 * @return Returns the totalOperations.
+	 */
+	public long getTotalOperations() {
+		return totalOperations;
+	}
 
-    /** Increment the total operation counter. */
-    public void incrementTotalOperations() {
-        synchronized (operationLock) {
-            totalOperations++;
-        }
-    }
+	/** Increment the total operation counter. */
+	public void incrementTotalOperations() {
+		synchronized (operationLock) {
+			totalOperations++;
+		}
+	}
 
-    /** Increment hits. */
-    public void incrementHits() {
-        synchronized (hitLock) {
-            hits++;
-        }
-    }
+	/** Increment hits. */
+	public void incrementHits() {
+		synchronized (hitLock) {
+			hits++;
+		}
+	}
 
-    public void startTuneCycle() {
-        totalOperationsStartTuneCycle = totalOperations;
-    }
+	public void startTuneCycle() {
+		totalOperationsStartTuneCycle = totalOperations;
+	}
 
-    public void calculateQueriesPerSecond(final long sleepTime) {
-        if (sleepTime > 0L) {
-            queriesPerSecond = (totalOperations - totalOperationsStartTuneCycle) / (sleepTime / 1000L);
-        } else {
-            queriesPerSecond = 0;
-        }
-    }
+	public void calculateQueriesPerSecond(final long sleepTime) {
+		if (sleepTime > 0L) {
+			queriesPerSecond = (totalOperations - totalOperationsStartTuneCycle) / (sleepTime / 1000L);
+		} else {
+			queriesPerSecond = 0;
+		}
+	}
 
-    public long getQueriesPerSecond() {
-        return queriesPerSecond;
-    }
+	public long getQueriesPerSecond() {
+		return queriesPerSecond;
+	}
 
-    /**
-     * Reset the values.
-     */
-    public void reset() {
-        totalOperations = 0L;
-        hits = 0L;
-    }
+	/**
+	 * Reset the values.
+	 */
+	public void reset() {
+		totalOperations = 0L;
+		hits = 0L;
+	}
 }

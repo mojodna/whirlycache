@@ -12,36 +12,42 @@ import com.whirlycott.cache.ManagedCache;
  * This policy does nothing and is sometimes useful for debugging.
  * 
  * @author pjacob
- *
+ * 
  */
 public class NullPolicy implements CacheMaintenancePolicy {
 
-    /**
-     * 
-     */
-    public NullPolicy() {
-        super();
-    }
+	/**
+	 * 
+	 */
+	public NullPolicy() {
+		super();
+	}
 
-    /* (non-Javadoc)
-     * @see com.whirlycott.cache.CacheMaintenancePolicy#setCache(com.whirlycott.cache.ManagedCache)
-     */
-    public void setCache(ManagedCache _cache) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.whirlycott.cache.CacheMaintenancePolicy#setCache(com.whirlycott.cache.ManagedCache)
+	 */
+	public void setCache(final ManagedCache _cache) {
+		// Empty
+	}
 
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.whirlycott.cache.CacheMaintenancePolicy#setConfiguration(com.whirlycott.cache.CacheConfiguration)
+	 */
+	public void setConfiguration(final CacheConfiguration _configuration) {
+		// Empty
+	}
 
-    /* (non-Javadoc)
-     * @see com.whirlycott.cache.CacheMaintenancePolicy#setConfiguration(com.whirlycott.cache.CacheConfiguration)
-     */
-    public void setConfiguration(CacheConfiguration _configuration) {
-
-    }
-
-    /* (non-Javadoc)
-     * @see com.whirlycott.cache.CacheMaintenancePolicy#performMaintenance()
-     */
-    public void performMaintenance() {
-
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.whirlycott.cache.CacheMaintenancePolicy#performMaintenance()
+	 */
+	public void performMaintenance() {
+		// Empty
+	}
 
 }
