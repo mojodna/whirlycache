@@ -22,10 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.whirlycott.cache.ManagedCache;
 
 /**
- * This is a ManagedCache implementation based on Doug Lea's excellent
- * ConcurrentHashMap in his <a
- * href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">util.concurrent</a>
- * library:
+ * This is a ManagedCache implementation based on {@link ConcurrentHashMap}.
  * 
  * @author Phil Jacob
  */
