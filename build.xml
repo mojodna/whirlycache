@@ -126,7 +126,7 @@ limitations under the License.
             destdir="${build.target}"
             debug="${compile.debug}"
             deprecation="${compile.deprecation}" 
-        	source="1.4"
+        	source="1.5"
             optimize="${compile.optimize}">
             <classpath refid="base.classpath" />
         	<classpath refid="lib.classpath"/>
@@ -148,7 +148,7 @@ limitations under the License.
             destdir="${build.target}"
             debug="${compile.debug}"
             deprecation="${compile.deprecation}"
-        	source="1.4"
+        	source="1.5"
             optimize="${compile.optimize}">
             <classpath refid="base.classpath" />
         	<classpath refid="test.classpath" />
