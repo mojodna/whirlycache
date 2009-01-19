@@ -70,10 +70,10 @@ public class LRUMaintenancePolicy implements CacheMaintenancePolicy {
 					// ")");
 					final Object key = entry.getKey();
 					final Object val = this.managedCache.remove(key);
+					final Cacheable c = (Cacheable) key;
+					this.managedCache.remove(c);
 					if (val != null && val instanceof Cacheable) {
-						final Cacheable c = (Cacheable) key;
 						c.onRemove(val);
-						this.managedCache.remove(c);
 					}
 				}
 			}
