@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 
 import com.whirlycott.cache.CacheConfiguration;
 import com.whirlycott.cache.CacheMaintenancePolicy;
+import com.whirlycott.cache.Cacheable;
 import com.whirlycott.cache.ManagedCache;
 import com.whirlycott.cache.Messages;
 
@@ -72,7 +73,13 @@ public class LFUMaintenancePolicy implements CacheMaintenancePolicy {
 					// evictee.added + ", " + evictee.used + ", " +
 					// evictee.count +
 					// ")");
-					managedCache.remove(entry.getKey());
+					final Object key = entry.getKey();
+					final Object val = this.managedCache.remove(key);
+					if (val != null && val instanceof Cacheable) {
+						final Cacheable c = (Cacheable) key;
+						c.onRemove(val);
+						this.managedCache.remove(c);
+					}
 				}
 			}
 			if (log.isDebugEnabled()) {
